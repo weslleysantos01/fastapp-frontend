@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+# 🎉 FestApp — Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Interface web do **FestApp**, um sistema SaaS para gerenciamento de locações de itens para festas e eventos. Desenvolvido com React 18 e Vite.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🖥️ Tecnologias
 
-### `npm start`
+- [React 18](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [React Router DOM](https://reactrouter.com/)
+- [Axios](https://axios-http.com/)
+- [TailwindCSS](https://tailwindcss.com/) *(ou CSS Modules, ajuste conforme o seu projeto)*
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📁 Estrutura do Projeto
 
-### `npm test`
+```
+festapp-frontend/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── pages/
+│   ├── services/       # Configuração do Axios / chamadas à API
+│   ├── routes/
+│   ├── App.jsx
+│   └── main.jsx
+├── .env.example
+├── index.html
+├── package.json
+└── vite.config.js
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## ⚙️ Configuração e Instalação
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Pré-requisitos
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Node.js 18+
+- npm ou yarn
+- Backend do FestApp rodando localmente ou em produção
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 1. Clone o repositório
 
-### `npm run eject`
+```bash
+git clone https://github.com/weslleysantos01/festapp-frontend.git
+cd festapp-frontend
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 2. Instale as dependências
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm install
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 3. Configure as variáveis de ambiente
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Crie um arquivo `.env` na raiz do projeto:
 
-## Learn More
+```env
+VITE_API_BASE_URL=http://localhost:8080
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+> Ajuste a URL conforme o endereço do backend.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 4. Inicie o servidor de desenvolvimento
 
-### Code Splitting
+```bash
+npm run dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Acesse em: [http://localhost:5173](http://localhost:5173)
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🔐 Autenticação
 
-### Making a Progressive Web App
+O sistema utiliza **JWT (JSON Web Token)**. O token é armazenado no `localStorage` e enviado automaticamente nas requisições via interceptor do Axios.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Fluxo:
+1. Usuário faz login → backend retorna o token JWT
+2. Token é salvo no `localStorage`
+3. Cada requisição protegida envia o header `Authorization: Bearer <token>`
+4. Em caso de token expirado, o usuário é redirecionado para o login
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📦 Build para Produção
 
-### Deployment
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Os arquivos estarão na pasta `dist/`, prontos para deploy em qualquer servidor estático (Netlify, Vercel, Nginx, etc.).
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🌐 Integração com o Backend
+
+Este frontend consome a API REST do [FestApp Backend](https://github.com/weslleysantos01/festapp-backend).
+
+Certifique-se de que o backend está rodando e que o CORS está configurado para aceitar requisições da origem do frontend.
+
+---
+
+---
+
+## 📄 Licença
+
+Este projeto é **proprietário e confidencial**. Todos os direitos reservados © Weslley Santos.
+
+É **estritamente proibido** copiar, modificar, distribuir, sublicenciar ou utilizar este código, no todo ou em parte, sem autorização prévia e expressa do autor.
+
+---
+
+> Desenvolvido por [Weslley Santos](https://github.com/weslleysantos01)
