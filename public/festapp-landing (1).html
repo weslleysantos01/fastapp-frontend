@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FestApp — Gestão de Festas e Eventos</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300;1,9..144,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy: #0c1f4a;
+  --navy-mid: #163170;
+  --blue: #2460e8;
+  --gold: #f2b125;
+  --gold-light: #fdd16a;
+  --gold-dark: #c47f05;
+  --cream: #faf7f2;
+  --white: #ffffff;
+  --gray-1: #f4f1eb;
+  --gray-2: #e8e3d9;
+  --gray-3: #9ca3af;
+  --text: #1a1f36;
+  --easing: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 999;
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: padding 0.4s var(--easing), background 0.4s;
+}
+nav.stuck {
+  padding: 14px 48px;
+  background: rgba(12, 31, 74, 0.97);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 rgba(242, 177, 37, 0.12);
+}
+.logo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.logo-dot {
+  width: 7px; height: 7px;
+  background: var(--gold);
+  border-radius: 50%;
+  margin-left: 3px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+  animation: blink 2.5s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.nav-links a {
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: #fff; }
+.nav-pill {
+  background: var(--gold) !important;
+  color: var(--navy) !important;
+  padding: 9px 22px !important;
+  border-radius: 100px !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  transition: all 0.2s !important;
+}
+.nav-pill:hover {
+  background: var(--gold-light) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(242,177,37,0.35) !important;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-toggle span {
+  width: 24px; height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: all 0.3s;
+  display: block;
+}
+
+/* ─── MOBILE MENU ─── */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: var(--navy);
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  transform: translateY(-100%);
+  transition: transform 0.4s var(--easing);
+}
+.mobile-menu.open { transform: translateY(0); }
+.mobile-menu a {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--gold); }
+.mobile-cta {
+  margin-top: 8px;
+  background: var(--gold) !important;
+  color: var(--navy) !important;
+  font-size: 1rem !important;
+  padding: 14px 40px !important;
+  border-radius: 100px !important;
+}
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100svh;
+  background: var(--navy);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: 120px 48px 90px;
+}
+
+.hero-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 65% 15%, rgba(36,96,232,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 10% 85%, rgba(242,177,37,0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 60% at 95% 70%, rgba(22,49,112,0.7) 0%, transparent 50%);
+  pointer-events: none;
+}
+.hero-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.055) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+#hero-canvas { position: absolute; inset: 0; pointer-events: none; }
+
+.hero-inner {
+  position: relative;
+  z-index: 10;
+  max-width: 1160px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(242,177,37,0.1);
+  border: 1px solid rgba(242,177,37,0.25);
+  color: var(--gold-light);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 0.6s var(--easing) 0.1s forwards;
+}
+.chip-pulse {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: blink 2s infinite;
+}
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.6rem, 4.8vw, 4.4rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.16;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.7s var(--easing) 0.2s forwards;
+}
+.hero h1 .accent {
+  color: var(--gold);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.52);
+  line-height: 1.82;
+  max-width: 440px;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeUp 0.7s var(--easing) 0.32s forwards;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.7s var(--easing) 0.42s forwards;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 12px;
+  padding: 14px 28px;
+  transition: all 0.25s var(--easing);
+}
+.btn-gold { background: var(--gold); color: var(--navy); }
+.btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(242,177,37,0.38); }
+.btn-ghost { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.14); }
+.btn-ghost:hover { background: rgba(255,255,255,0.11); color: #fff; }
+.btn-icon { transition: transform 0.25s; display: inline-block; }
+.btn:hover .btn-icon { transform: translateX(3px); }
+
+/* Hero card */
+.hero-right {
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeUp 0.8s var(--easing) 0.35s forwards;
+}
+.dashboard-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 24px;
+  padding: 28px;
+  width: 100%;
+  max-width: 360px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: float 6s ease-in-out infinite 1s;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+.dc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.dc-title { font-weight: 700; color: rgba(255,255,255,0.9); font-size: 0.88rem; }
+.dc-date { font-size: 0.72rem; color: rgba(255,255,255,0.3); }
+.dc-row { display: flex; align-items: center; gap: 13px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.dc-row:last-child { border-bottom: none; padding-bottom: 0; }
+.dc-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.dc-icon.g { background: rgba(34,197,94,0.15); }
+.dc-icon.y { background: rgba(242,177,37,0.15); }
+.dc-icon.b { background: rgba(36,96,232,0.25); }
+.dc-icon.r { background: rgba(239,68,68,0.15); }
+.dc-info { flex: 1; min-width: 0; }
+.dc-label { color: rgba(255,255,255,0.38); font-size: 0.7rem; margin-bottom: 2px; }
+.dc-val { color: #fff; font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dc-badge { font-size: 0.65rem; font-weight: 700; padding: 3px 9px; border-radius: 100px; flex-shrink: 0; }
+.bg-green { background: rgba(34,197,94,0.16); color: #4ade80; }
+.bg-gold  { background: rgba(242,177,37,0.16); color: var(--gold-light); }
+.bg-red   { background: rgba(239,68,68,0.16); color: #f87171; }
+
+/* Stats bar */
+.hero-stats {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 10;
+  background: rgba(255,255,255,0.04);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  justify-content: center;
+}
+.stat-item {
+  flex: 1;
+  max-width: 200px;
+  padding: 22px 16px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.07);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ─── SECTION BASE ─── */
+.section { padding: 96px 48px; }
+.container { max-width: 1160px; margin: 0 auto; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+  margin-bottom: 16px;
+}
+.eyebrow::before { content: ''; width: 20px; height: 2px; background: var(--blue); border-radius: 2px; flex-shrink: 0; }
+
+h2.sh {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+h2.sh .li { font-style: italic; font-weight: 300; }
+.sp { font-size: 1rem; color: var(--gray-3); line-height: 1.82; max-width: 500px; }
+
+/* ─── PROBLEMS ─── */
+.problems-wrap {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  align-items: start;
+}
+.problems-sticky { position: sticky; top: 100px; }
+.problems-grid { display: flex; flex-direction: column; gap: 16px; }
+
+.problem-card {
+  background: var(--white);
+  border: 1px solid var(--gray-2);
+  border-radius: 18px;
+  padding: 28px 28px 28px 24px;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 18px;
+  align-items: start;
+  transition: all 0.35s var(--easing);
+  cursor: default;
+}
+.problem-card:hover { border-color: var(--blue); box-shadow: 0 12px 40px rgba(12,31,74,0.09); transform: translateX(5px); }
+.problem-card:hover .p-num { color: var(--blue); }
+.p-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-2);
+  line-height: 1;
+  transition: color 0.3s;
+  padding-top: 4px;
+}
+.p-emoji { font-size: 1.5rem; margin-bottom: 10px; display: block; }
+.p-title { font-weight: 700; font-size: 0.95rem; color: var(--navy); margin-bottom: 8px; }
+.p-desc { font-size: 0.875rem; color: var(--gray-3); line-height: 1.75; }
+
+/* ─── FEATURES ─── */
+.features-section {
+  background: var(--navy);
+  padding: 96px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.features-section .eyebrow { color: var(--gold-light); }
+.features-section .eyebrow::before { background: var(--gold-light); }
+.features-section h2.sh { color: var(--white); }
+.features-section .sp { color: rgba(255,255,255,0.44); }
+
+.feat-bg {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+}
+.feat-glow {
+  position: absolute;
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(36,96,232,0.15) 0%, transparent 70%);
+  top: -200px; right: -100px;
+  pointer-events: none;
+}
+
+.feat-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: end;
+  margin-bottom: 52px;
+  position: relative; z-index: 2;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  position: relative; z-index: 2;
+}
+.feat-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px;
+  padding: 36px;
+  transition: all 0.35s var(--easing);
+  position: relative;
+  overflow: hidden;
+}
+.feat-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(242,177,37,0.04), transparent 50%);
+  opacity: 0; transition: opacity 0.35s;
+}
+.feat-card:hover { background: rgba(255,255,255,0.065); border-color: rgba(242,177,37,0.2); transform: translateY(-4px); box-shadow: 0 24px 48px rgba(0,0,0,0.3); }
+.feat-card:hover::after { opacity: 1; }
+.feat-card.wide { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; }
+
+.feat-icon {
+  width: 50px; height: 50px;
+  border-radius: 14px;
+  background: rgba(242,177,37,0.1);
+  border: 1px solid rgba(242,177,37,0.14);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+}
+.feat-card.wide .feat-icon { margin-bottom: 0; }
+.feat-title { font-weight: 700; font-size: 1.05rem; color: #fff; margin-bottom: 10px; }
+.feat-desc { font-size: 0.875rem; color: rgba(255,255,255,0.45); line-height: 1.8; }
+.feat-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 18px;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: rgba(242,177,37,0.1); color: var(--gold-light);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  border: 1px solid rgba(242,177,37,0.18);
+}
+
+.mini-bars {
+  background: rgba(0,0,0,0.25);
+  border-radius: 14px;
+  padding: 20px 22px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.bars-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bars-row:last-child { margin-bottom: 0; }
+.bar-lbl { font-size: 0.72rem; color: rgba(255,255,255,0.4); width: 28px; flex-shrink: 0; }
+.bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+.bar-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--gold));
+  transform-origin: left; transform: scaleX(0);
+  transition: transform 1s var(--easing);
+}
+.bar-pct { font-size: 0.68rem; color: rgba(255,255,255,0.35); width: 28px; text-align: right; flex-shrink: 0; }
+
+/* ─── PRICING ─── */
+.pricing-section { padding: 96px 48px; background: var(--cream); }
+.pricing-head { text-align: center; margin-bottom: 56px; }
+.pricing-head .sp { margin: 12px auto 0; }
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+.plan {
+  background: var(--white);
+  border: 1px solid var(--gray-2);
+  border-radius: 24px;
+  padding: 40px 32px;
+  position: relative;
+  transition: all 0.35s var(--easing);
+}
+.plan:hover:not(.plan--featured) { border-color: rgba(36,96,232,0.25); box-shadow: 0 20px 52px rgba(12,31,74,0.09); transform: translateY(-4px); }
+.plan--featured { background: var(--navy); border-color: var(--navy); transform: translateY(-8px); box-shadow: 0 28px 64px rgba(12,31,74,0.3); }
+.plan--featured:hover { transform: translateY(-12px); }
+
+.plan-ribbon {
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  color: var(--navy); font-size: 0.68rem; font-weight: 800;
+  padding: 5px 16px; border-radius: 100px; white-space: nowrap;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(242,177,37,0.4);
+}
+.plan-tier { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gray-3); margin-bottom: 14px; }
+.plan--featured .plan-tier { color: rgba(255,255,255,0.4); }
+.plan-price { font-family: 'Fraunces', serif; font-size: 2.8rem; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+.plan--featured .plan-price { color: var(--white); }
+.plan-per { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; font-weight: 400; color: var(--gray-3); }
+.plan--featured .plan-per { color: rgba(255,255,255,0.35); }
+.plan-desc { font-size: 0.85rem; color: var(--gray-3); margin: 14px 0 22px; padding-bottom: 22px; border-bottom: 1px solid var(--gray-2); line-height: 1.65; }
+.plan--featured .plan-desc { color: rgba(255,255,255,0.45); border-color: rgba(255,255,255,0.1); }
+.plan-list { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 11px; }
+.plan-list li { font-size: 0.875rem; color: var(--text); display: flex; align-items: flex-start; gap: 10px; }
+.plan--featured .plan-list li { color: rgba(255,255,255,0.75); }
+.plan-list li::before {
+  content: '';
+  width: 16px; height: 16px; border-radius: 50%;
+  background: rgba(34,197,94,0.14) url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3.5L3.5 6L9 1' stroke='%2322c55e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") no-repeat center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.plan-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 13px; border-radius: 12px;
+  font-weight: 700; font-size: 0.875rem;
+  text-decoration: none; transition: all 0.25s var(--easing);
+}
+.plan-btn-outline { border: 1.5px solid var(--gray-2); color: var(--navy); }
+.plan-btn-outline:hover { border-color: var(--navy); background: var(--navy); color: var(--white); transform: translateY(-2px); }
+.plan-btn-fill { background: var(--gold); color: var(--navy); }
+.plan-btn-fill:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(242,177,37,0.4); }
+
+/* ─── CTA ─── */
+.cta-section {
+  background: var(--navy);
+  padding: 110px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(36,96,232,0.18) 0%, transparent 70%); pointer-events: none; }
+.cta-rings { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.ring { position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,0.04); }
+.ring:nth-child(1) { width: 280px; height: 280px; animation: pr 5s ease-in-out infinite; }
+.ring:nth-child(2) { width: 480px; height: 480px; animation: pr 5s ease-in-out infinite 1.2s; }
+.ring:nth-child(3) { width: 680px; height: 680px; animation: pr 5s ease-in-out infinite 2.4s; }
+@keyframes pr { 0%,100%{opacity:0.4;transform:scale(1)} 50%{opacity:0.15;transform:scale(1.04)} }
+
+.cta-inner { position: relative; z-index: 2; }
+.cta-section h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700; color: var(--white);
+  line-height: 1.2; margin-bottom: 18px;
+}
+.cta-section h2 em { font-style: italic; font-weight: 300; color: var(--gold-light); }
+.cta-section p { font-size: 1rem; color: rgba(255,255,255,0.5); line-height: 1.8; max-width: 400px; margin: 0 auto 40px; }
+.cta-note { margin-top: 16px; font-size: 0.78rem; color: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* ─── FOOTER ─── */
+footer {
+  background: #060f25;
+  padding: 40px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  border-top: 1px solid rgba(242,177,37,0.08);
+}
+.footer-logo { font-weight: 800; font-size: 1.3rem; color: var(--white); }
+.footer-logo span { color: var(--gold); }
+.footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-links a { font-size: 0.82rem; color: rgba(255,255,255,0.28); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--gold); }
+footer p { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.65s var(--easing), transform 0.65s var(--easing); }
+.reveal.visible { opacity: 1; transform: none; }
+.d1{transition-delay:0.1s} .d2{transition-delay:0.18s} .d3{transition-delay:0.26s}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  nav.stuck { padding: 13px 24px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+
+  .hero { padding: 100px 24px 90px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 0; }
+  .hero-right { display: none; }
+  .hero h1 { font-size: clamp(2.2rem, 7.5vw, 2.8rem); }
+  .hero-desc { font-size: 0.95rem; max-width: 100%; }
+
+  .hero-stats { flex-wrap: wrap; }
+  .stat-item { min-width: 50%; max-width: none; flex: 1 0 50%; }
+  .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .stat-item:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.07); }
+  .stat-item:nth-child(even) { border-right: none; }
+  .stat-num { font-size: 1.55rem; }
+
+  .section { padding: 64px 24px; }
+  .features-section { padding: 64px 24px; }
+  .pricing-section { padding: 64px 24px; }
+  .cta-section { padding: 72px 24px; }
+  footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+  .footer-links { justify-content: center; }
+
+  .problems-wrap { grid-template-columns: 1fr; gap: 36px; }
+  .problems-sticky { position: static; }
+  .problem-card { grid-template-columns: 36px 1fr; gap: 14px; }
+  .problem-card:hover { transform: none; box-shadow: 0 8px 24px rgba(12,31,74,0.08); }
+
+  .feat-header { grid-template-columns: 1fr; gap: 16px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feat-card.wide { grid-column: span 1; grid-template-columns: 1fr; }
+
+  .plans-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
+  .plan--featured { transform: none; }
+  .plan--featured:hover { transform: translateY(-4px); }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2rem; line-height: 1.22; }
+  .hero-ctas { flex-direction: column; }
+  .hero-ctas .btn { justify-content: center; text-align: center; }
+  h2.sh { font-size: 1.75rem; }
+  .stat-item { padding: 16px 12px; }
+  .stat-num { font-size: 1.35rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#problemas" onclick="closeMenu()">Problemas</a>
+  <a href="#funcionalidades" onclick="closeMenu()">Funcionalidades</a>
+  <a href="#precos" onclick="closeMenu()">Preços</a>
+  <a href="#cadastro" class="btn btn-gold mobile-cta" onclick="closeMenu()">Começar grátis</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">FestApp<div class="logo-dot"></div></a>
+  <div class="nav-links">
+    <a href="#problemas">Problemas</a>
+    <a href="#funcionalidades">Funcionalidades</a>
+    <a href="#precos">Preços</a>
+    <a href="#cadastro" class="nav-pill">Começar grátis</a>
+  </div>
+  <div class="nav-toggle" id="navToggle" onclick="toggleMenu()">
+    <span id="t1"></span>
+    <span id="t2"></span>
+    <span id="t3"></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-dots"></div>
+  <canvas id="hero-canvas"></canvas>
+
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-chip">
+        <div class="chip-pulse"></div>
+        Software para festas e eventos
+      </div>
+      <h1>
+        Gerencie sua empresa de festas com
+        <span class="accent">inteligência</span>
+      </h1>
+      <p class="hero-desc">
+        Chega de planilha, WhatsApp e confusão. O FestApp organiza sua equipe, brinquedos e festas em um único sistema.
+      </p>
+      <div class="hero-ctas">
+        <a href="#cadastro" class="btn btn-gold">
+          Criar minha conta grátis <span class="btn-icon">→</span>
+        </a>
+        <a href="#funcionalidades" class="btn btn-ghost">
+          Ver funcionalidades
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="dashboard-card">
+        <div class="dc-header">
+          <div class="dc-title">📊 Painel do dia</div>
+          <div class="dc-date" id="liveDate"></div>
+        </div>
+        <div class="dc-row">
+          <div class="dc-icon g">🎪</div>
+          <div class="dc-info"><div class="dc-label">Festas hoje</div><div class="dc-val">4 agendadas</div></div>
+          <span class="dc-badge bg-green">OK</span>
+        </div>
+        <div class="dc-row">
+          <div class="dc-icon y">👥</div>
+          <div class="dc-info"><div class="dc-label">Equipe alocada</div><div class="dc-val">12 funcionários</div></div>
+          <span class="dc-badge bg-green">✓</span>
+        </div>
+        <div class="dc-row">
+          <div class="dc-icon b">🎠</div>
+          <div class="dc-info"><div class="dc-label">Brinquedos</div><div class="dc-val">Sem conflitos</div></div>
+          <span class="dc-badge bg-green">✓</span>
+        </div>
+        <div class="dc-row">
+          <div class="dc-icon r">⏰</div>
+          <div class="dc-info"><div class="dc-label">Pontualidade</div><div class="dc-val">1 atraso detectado</div></div>
+          <span class="dc-badge bg-red">!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num" data-target="350" data-suffix="+">0</div><div class="stat-lbl">Empresas ativas</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="12000" data-suffix="+">0</div><div class="stat-lbl">Festas gerenciadas</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="98" data-suffix="%">0</div><div class="stat-lbl">Satisfação</div></div>
+    <div class="stat-item"><div class="stat-num" data-target="40" data-suffix="%">0</div><div class="stat-lbl">Menos conflitos</div></div>
+  </div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="section" id="problemas">
+  <div class="container">
+    <div class="problems-wrap">
+      <div class="problems-sticky">
+        <span class="eyebrow reveal">Os desafios do setor</span>
+        <h2 class="sh reveal d1">Sua empresa merece mais do que uma <span class="li">planilha</span></h2>
+        <p class="sp reveal d2">Empresas de festas enfrentam os mesmos problemas todo dia. O FestApp resolve todos de uma vez.</p>
+      </div>
+      <div class="problems-grid">
+        <div class="problem-card reveal">
+          <div class="p-num">01</div>
+          <div><span class="p-emoji">📋</span><div class="p-title">Escala manual e caótica</div><p class="p-desc">Quem trabalha em qual festa? Quem já tem duas festas hoje? Sem sistema, essa informação se perde no WhatsApp.</p></div>
+        </div>
+        <div class="problem-card reveal d1">
+          <div class="p-num">02</div>
+          <div><span class="p-emoji">🎠</span><div class="p-title">Conflito de brinquedos</div><p class="p-desc">O touro mecânico foi reservado para dois eventos no mesmo horário. Você só descobre no dia da festa.</p></div>
+        </div>
+        <div class="problem-card reveal d2">
+          <div class="p-num">03</div>
+          <div><span class="p-emoji">⏱️</span><div class="p-title">Atrasos sem controle</div><p class="p-desc">Funcionário chegou tarde? Sem registro não há histórico. Sem histórico não há como cobrar ou melhorar.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="funcionalidades">
+  <div class="feat-bg"></div>
+  <div class="feat-glow"></div>
+  <div class="container" style="position:relative;z-index:2">
+    <div class="feat-header">
+      <div>
+        <span class="eyebrow reveal">O que o FestApp faz</span>
+        <h2 class="sh reveal d1">Tudo que sua empresa precisa em <span class="li">um só lugar</span></h2>
+      </div>
+      <p class="sp reveal d2">Cada módulo resolve um problema real do dia a dia de empresas de festas e eventos.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card wide reveal">
+        <div>
+          <div class="feat-icon">👥</div>
+          <div class="feat-title">Escala Automática Inteligente</div>
+          <p class="feat-desc">Clique em "Alocar Equipe" e o sistema distribui automaticamente os funcionários disponíveis, respeitando o limite de 2 festas por dia e priorizando as melhores avaliações.</p>
+          <span class="feat-tag">Algoritmo inteligente</span>
+        </div>
+        <div class="mini-bars" id="miniBars">
+          <div class="bars-row"><span class="bar-lbl">Seg</span><div class="bar-track"><div class="bar-fill" data-w="0.55"></div></div><span class="bar-pct">55%</span></div>
+          <div class="bars-row"><span class="bar-lbl">Qua</span><div class="bar-track"><div class="bar-fill" data-w="0.72"></div></div><span class="bar-pct">72%</span></div>
+          <div class="bars-row"><span class="bar-lbl">Sex</span><div class="bar-track"><div class="bar-fill" data-w="0.88"></div></div><span class="bar-pct">88%</span></div>
+          <div class="bars-row"><span class="bar-lbl">Sáb</span><div class="bar-track"><div class="bar-fill" data-w="1"></div></div><span class="bar-pct">100%</span></div>
+          <div class="bars-row"><span class="bar-lbl">Dom</span><div class="bar-track"><div class="bar-fill" data-w="0.93"></div></div><span class="bar-pct">93%</span></div>
+        </div>
+      </div>
+      <div class="feat-card reveal d1">
+        <div class="feat-icon">⏰</div>
+        <div class="feat-title">Controle de Ponto</div>
+        <p class="feat-desc">O funcionário registra a chegada pelo celular com um clique. O sistema detecta atrasos e notifica a gestora por email automaticamente.</p>
+        <span class="feat-tag">Notificação em tempo real</span>
+      </div>
+      <div class="feat-card reveal d2">
+        <div class="feat-icon">🎠</div>
+        <div class="feat-title">Gestão de Brinquedos</div>
+        <p class="feat-desc">Cadastre seu estoque e o sistema bloqueia reservas conflitantes automaticamente. Nunca mais dois clientes no mesmo horário.</p>
+        <span class="feat-tag">Anti-conflito</span>
+      </div>
+      <div class="feat-card reveal d1">
+        <div class="feat-icon">💰</div>
+        <div class="feat-title">Controle Financeiro</div>
+        <p class="feat-desc">Valor por festa, pagamento da equipe, receita e lucro por período. Relatórios completos para saber o que entra e o que sai.</p>
+        <span class="feat-tag">Relatórios detalhados</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="precos">
+  <div class="container">
+    <div class="pricing-head reveal">
+      <span class="eyebrow" style="justify-content:center">Planos e preços</span>
+      <h2 class="sh">Simples, justo e <span class="li">sem surpresas</span></h2>
+      <p class="sp">Escolha o plano ideal. Cancele quando quiser.</p>
+    </div>
+    <div class="plans-grid">
+      <div class="plan reveal">
+        <div class="plan-tier">Básico</div>
+        <div class="plan-price">R$99<span class="plan-per">/mês</span></div>
+        <p class="plan-desc">Ideal para empresas em crescimento</p>
+        <ul class="plan-list">
+          <li>Até 15 funcionários</li>
+          <li>Escala automática</li>
+          <li>Controle de ponto</li>
+           <li>Gestão de brinquedos</li>
+          <li>Alertas de atraso por email</li>
+          <li>Suporte por email</li>
+        </ul>
+        <a href="#cadastro" class="plan-btn plan-btn-outline">Começar agora →</a>
+      </div>
+      <div class="plan plan--featured reveal d1">
+        <div class="plan-ribbon">✦ Mais popular</div>
+        <div class="plan-tier">Profissional</div>
+        <div class="plan-price">R$199<span class="plan-per">/mês</span></div>
+        <p class="plan-desc">Para empresas que querem crescer com controle</p>
+        <ul class="plan-list">
+          <li>Até 30 funcionários</li>
+          <li>Tudo do plano Básico</li>
+          <li>Controle financeiro</li>
+          <li>Relatórios completos</li>
+          <li>Suporte prioritário</li>
+        </ul>
+        <a href="#cadastro" class="plan-btn plan-btn-fill">Escolher este plano →</a>
+      </div>
+      <div class="plan reveal d2">
+        <div class="plan-tier">Premium</div>
+        <div class="plan-price">R$299<span class="plan-per">/mês</span></div>
+        <p class="plan-desc">Solução completa para grandes operações</p>
+        <ul class="plan-list">
+          <li>Funcionários ilimitados</li>
+          <li>Tudo do Profissional</li>
+          <li>Chatbot WhatsApp</li>
+          <li>API de integrações</li>
+          <li>Suporte dedicado 24/7</li>
+        </ul>
+        <a href="#cadastro" class="plan-btn plan-btn-outline">Começar agora →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cadastro">
+  <div class="cta-glow"></div>
+  <div class="cta-rings"><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
+  <div class="cta-inner">
+    <h2 class="reveal">Pronto para organizar<br/>sua empresa de <em>festas?</em></h2>
+    <p class="reveal d1">Cadastre sua empresa agora e comece a usar o FestApp hoje mesmo. Sem cartão de crédito.</p>
+    <a href="http://localhost:3000/cadastro" class="btn btn-gold reveal d2" style="font-size:1rem;padding:16px 44px;border-radius:14px;display:inline-flex">
+      Cadastrar minha empresa <span class="btn-icon">→</span>
+    </a>
+    <p class="cta-note reveal d3">🔒 Sem cartão de crédito &nbsp;·&nbsp; Cancele quando quiser</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">FestApp<span>.</span></div>
+  <div class="footer-links">
+    <a href="#problemas">Produto</a>
+    <a href="#precos">Preços</a>
+    <a href="#">Contato</a>
+    <a href="#">Privacidade</a>
+  </div>
+  <p>© 2026 FestApp · Feito com 🎉 no Brasil</p>
+</footer>
+
+<script>
+/* Nav scroll */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('stuck', scrollY > 30), { passive: true });
+
+/* Mobile menu */
+let open = false;
+function toggleMenu() {
+  open = !open;
+  document.getElementById('mobileMenu').classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+  const [a,b,c] = ['t1','t2','t3'].map(id => document.getElementById(id));
+  a.style.transform = open ? 'rotate(45deg) translate(5px, 5px)' : '';
+  b.style.opacity   = open ? '0' : '1';
+  c.style.transform = open ? 'rotate(-45deg) translate(5px, -5px)' : '';
+}
+function closeMenu() { if (open) toggleMenu(); }
+
+/* Live date */
+const dEl = document.getElementById('liveDate');
+if (dEl) dEl.textContent = new Date().toLocaleDateString('pt-BR', { weekday:'short', day:'2-digit', month:'short' });
+
+/* Scroll reveal */
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+/* Counters */
+function runCounter(el) {
+  const target = +el.dataset.target, suffix = el.dataset.suffix || '', dur = 1800;
+  let start = null;
+  const step = ts => {
+    if (!start) start = ts;
+    const p = Math.min((ts - start) / dur, 1);
+    el.textContent = Math.floor((1 - Math.pow(1-p, 3)) * target).toLocaleString('pt-BR') + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const co = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { runCounter(e.target); co.unobserve(e.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-target]').forEach(el => co.observe(el));
+
+/* Bar chart */
+const barsEl = document.getElementById('miniBars');
+if (barsEl) {
+  new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      barsEl.querySelectorAll('.bar-fill').forEach((b, i) => {
+        setTimeout(() => { b.style.transform = `scaleX(${b.dataset.w})`; }, i * 80);
+      });
+    }
+  }, { threshold: 0.4 }).observe(barsEl);
+}
+
+/* Particles */
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+resize();
+window.addEventListener('resize', resize, { passive: true });
+
+const pts = Array.from({ length: 55 }, () => ({
+  x: Math.random(), y: Math.random() * 1.1,
+  vx: (Math.random() - 0.5) * 0.00028,
+  vy: -(Math.random() * 0.00035 + 0.0001),
+  r: Math.random() * 1.3 + 0.3,
+  a: Math.random() * 0.4 + 0.07,
+  life: Math.random() * 0.6,
+  max: Math.random() * 0.5 + 0.3
+}));
+
+(function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  pts.forEach(p => {
+    p.life += 0.0025; p.x += p.vx; p.y += p.vy;
+    if (p.life > p.max || p.y < -0.05) { p.life = 0; p.x = Math.random(); p.y = 1.05; }
+    const fade = Math.sin((p.life / p.max) * Math.PI);
+    ctx.save();
+    ctx.globalAlpha = p.a * fade;
+    ctx.fillStyle = Math.random() > 0.88 ? '#f2b125' : '#ffffff';
+    ctx.beginPath();
+    ctx.arc(p.x * canvas.width, p.y * canvas.height, p.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+  requestAnimationFrame(loop);
+})();
+
+/* Smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+peso = float(input("digite seu peso em kg:"))
+altura = float(input("digite sua altura em cm:"))
+
+imc = peso / (altura * altura)
+
+if imc < 19:
+    print("abaixo do peso")
+elif imc < 25:
+    print("peso normal")
+elif imc < 29.9:
+    print("sobre peso")
+else:
+    print("obesidade")
