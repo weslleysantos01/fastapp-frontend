@@ -1,119 +1,45 @@
-# 🎉 FestApp — Frontend
+# FestApp - Frontend Interface (SaaS)
 
-Interface web do **FestApp**, um sistema SaaS para gerenciamento de locações de itens para festas e eventos. Desenvolvido com React 18 e Vite.
-
----
-
-## 🖥️ Tecnologias
-
-- [React 18](https://react.dev/)
-- [Vite](https://vitejs.dev/)
-- [React Router DOM](https://reactrouter.com/)
-- [Axios](https://axios-http.com/)
-- [TailwindCSS](https://tailwindcss.com/) *(ou CSS Modules, ajuste conforme o seu projeto)*
+Esta é a interface do **FestApp**, uma aplicação SaaS voltada para a gestão profissional de eventos. O frontend foi desenvolvido com **React.js**, priorizando uma interface reativa, segura e com alta performance para o usuário final.
 
 ---
 
-## 📁 Estrutura do Projeto
+## 🏗️ Engenharia de Frontend
 
-```
-festapp-frontend/
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── pages/
-│   ├── services/       # Configuração do Axios / chamadas à API
-│   ├── routes/
-│   ├── App.jsx
-│   └── main.jsx
-├── .env.example
-├── index.html
-├── package.json
-└── vite.config.js
-```
+O desenvolvimento foi guiado por boas práticas de arquitetura e segurança:
 
----
+* **Componentização Modular:** Interface construída com componentes reutilizáveis, facilitando a manutenção e a consistência visual em todo o ecossistema do FestApp.
+* **Gerenciamento de Estado:** Fluxo de dados otimizado para garantir que as informações de múltiplos tenants (organizadores) sejam exibidas com isolamento e fluidez[cite: 2].
+* **Segurança na Camada do Cliente:** 
+    * Implementação de rotas protegidas que validam o token JWT antes da renderização[cite: 2].
+    * Sanitização de entradas para prevenir ataques de Cross-Site Scripting (XSS)[cite: 2].
+    * Limites de caracteres em campos de input para garantir a integridade dos dados enviados ao backend[cite: 2].
 
-## ⚙️ Configuração e Instalação
+## 🛠️ Stack Tecnológica
 
-### Pré-requisitos
+| Tecnologia | Finalidade Técnica |
+| :--- | :--- |
+| **React.js** | Biblioteca principal para construção de UI declarativa[cite: 2]. |
+| **Axios** | Cliente HTTP para consumo seguro da API backend[cite: 2]. |
+| **React Router** | Gerenciamento de navegação e proteção de rotas privadas[cite: 2]. |
+| **CSS/Styled-Components** | Estilização moderna com escopo isolado por componente. |
 
-- Node.js 18+
-- npm ou yarn
-- Backend do FestApp rodando localmente ou em produção
+## 🚀 Diferenciais de UX
 
-### 1. Clone o repositório
-
-```bash
-git clone https://github.com/weslleysantos01/festapp-frontend.git
-cd festapp-frontend
-```
-
-### 2. Instale as dependências
-
-```bash
-npm install
-```
-
-### 3. Configure as variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto:
-
-```env
-VITE_API_BASE_URL=http://localhost:8080
-```
-
-> Ajuste a URL conforme o endereço do backend.
-
-### 4. Inicie o servidor de desenvolvimento
-
-```bash
-npm run dev
-```
-
-Acesse em: [http://localhost:5173](http://localhost:5173)
+1. **Interface Responsiva:** Adaptada para uso em diferentes dispositivos, permitindo que organizadores gerenciem eventos de qualquer lugar[cite: 2].
+2. **Feedback em Tempo Real:** Tratamento de erros e estados de carregamento (loading) para uma experiência de uso sem atritos.
+3. **Consumo Otimizado:** Integração eficiente com o Supabase e o backend Java 21 para garantir baixa latência na exibição de dados[cite: 2].
 
 ---
 
-## 🔐 Autenticação
+## ⚖️ Licença e Propriedade Intelectual
 
-O sistema utiliza **JWT (JSON Web Token)**. O token é armazenado no `localStorage` e enviado automaticamente nas requisições via interceptor do Axios.
+**Copyright (c) 2026 Weslley Dos Santos. Todos os direitos reservados.**
 
-Fluxo:
-1. Usuário faz login → backend retorna o token JWT
-2. Token é salvo no `localStorage`
-3. Cada requisição protegida envia o header `Authorization: Bearer <token>`
-4. Em caso de token expirado, o usuário é redirecionado para o login
+Este código-fonte é de propriedade exclusiva de **Weslley Dos Santos**.
+* **É ESTRITAMENTE PROIBIDO:** A cópia, reprodução, distribuição ou modificação sem autorização prévia por escrito.
+* O uso não autorizado constitui violação de direitos autorais e está sujeito a medidas judiciais cabíveis (indenizações e sanções penais).
 
 ---
 
-## 📦 Build para Produção
-
-```bash
-npm run build
-```
-
-Os arquivos estarão na pasta `dist/`, prontos para deploy em qualquer servidor estático (Netlify, Vercel, Nginx, etc.).
-
----
-
-## 🌐 Integração com o Backend
-
-Este frontend consome a API REST do [FestApp Backend](https://github.com/weslleysantos01/festapp-backend).
-
-Certifique-se de que o backend está rodando e que o CORS está configurado para aceitar requisições da origem do frontend.
-
----
-
----
-
-## 📄 Licença
-
-Este projeto é **proprietário e confidencial**. Todos os direitos reservados © Weslley Santos.
-
-É **estritamente proibido** copiar, modificar, distribuir, sublicenciar ou utilizar este código, no todo ou em parte, sem autorização prévia e expressa do autor.
-
----
-
-> Desenvolvido por [Weslley Santos](https://github.com/weslleysantos01)
+> *Desenvolvido com foco em escalabilidade e segurança por Weslley Dos Santos.*
