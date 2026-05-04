@@ -10,13 +10,15 @@ export default function Cadastro() {
         nomeEmpresa: '',
         email: '',
         senha: '',
-        telefone: ''
+        telefone: '',
+        aceitaTermos: false
     });
     const [erro, setErro] = useState('');
     const [carregando, setCarregando] = useState(false);
 
     function handleChange(e) {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value, type, checked } = e.target;
+        setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
     }
 
     function nomePlano(p) {
@@ -30,6 +32,12 @@ export default function Cadastro() {
     async function handleSubmit(e) {
         e.preventDefault();
         setErro('');
+
+        if (!form.aceitaTermos) {
+            setErro('Você deve aceitar os termos de uso e política de privacidade');
+            return;
+        }
+
         setCarregando(true);
 
         try {
@@ -58,10 +66,8 @@ export default function Cadastro() {
             window.location.href = checkout.data.url;
 
         } catch (err) {
-            console.log('Erro completo:', err);
-            console.log('Response data:', err.response?.data);
             const msg = err.response?.data;
-            setErro(typeof msg === 'string' ? msg : 'Erro ao cadastrar. Tente novamente.');
+            setErro(typeof msg === 'string' ? msg : msg?.erro || 'Erro ao cadastrar. Tente novamente.');
         } finally {
             setCarregando(false);
         }
@@ -136,9 +142,32 @@ export default function Cadastro() {
                             className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
+
+                    {/* LGPD: consentimento */}
+                    <div className="flex items-start gap-2">
+                        <input
+                            type="checkbox"
+                            id="aceitaTermos"
+                            name="aceitaTermos"
+                            checked={form.aceitaTermos}
+                            onChange={handleChange}
+                            className="mt-1 cursor-pointer"
+                        />
+                        <label htmlFor="aceitaTermos" className="text-xs text-gray-500 cursor-pointer">
+                            Li e aceito os{' '}
+                            <a href="/termos" target="_blank" className="text-blue-700 underline">
+                                Termos de Uso
+                            </a>{' '}
+                            e a{' '}
+                            <a href="/privacidade" target="_blank" className="text-blue-700 underline">
+                                Política de Privacidade
+                            </a>
+                        </label>
+                    </div>
+
                     <button
                         type="submit"
-                        disabled={carregando}
+                        disabled={carregando || !form.aceitaTermos}
                         className="w-full bg-blue-900 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition disabled:opacity-50"
                     >
                         {carregando ? 'Criando conta...' : 'Criar conta e ir para o pagamento'}

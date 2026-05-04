@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { supabase } from './services/supabase';
 import api from './services/api';
 
@@ -18,8 +18,8 @@ import PagamentoCancelado from './pages/PagamentoCancelado';
 import AguardandoConfirmacao from './pages/AguardandoConfirmacao';
 import RelatorioFuncionarios from './pages/RelatorioFuncionarios';
 import Perfil from './pages/Perfil';
-
-// --- COMPONENTES DE APOIO (A SUA LÓGICA) ---
+import Termos from './pages/Termos';
+import Privacidade from './pages/Privacidade';
 
 function ModalUpgrade({ onFechar }) {
     return (
@@ -38,12 +38,14 @@ function ModalUpgrade({ onFechar }) {
                     >
                         Agora não
                     </button>
-                    <a
-                        href="/planos"
+                    
+                    <Link
+                        to="/planos"
+                        onClick={onFechar}
                         className="flex-1 bg-blue-900 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition text-center"
                     >
                         Ver planos →
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>
@@ -65,9 +67,9 @@ function RotaBloqueada({ plano, planosPermitidos, children }) {
                 <div className="p-6 text-center text-gray-400">
                     <div className="text-5xl mb-4">🔒</div>
                     <p className="font-medium text-gray-600">Funcionalidade não disponível no seu plano</p>
-                    <a href="/planos" className="mt-4 inline-block text-blue-700 text-sm hover:underline">
+                    <Link to="/planos" className="mt-4 inline-block text-blue-700 text-sm hover:underline">
                         Ver opções de upgrade →
-                    </a>
+                    </Link>
                 </div>
                 {mostrarModal && <ModalUpgrade onFechar={() => setMostrarModal(false)} />}
             </>
@@ -77,8 +79,6 @@ function RotaBloqueada({ plano, planosPermitidos, children }) {
     return children;
 }
 
-// --- COMPONENTE PRINCIPAL ---
-
 function App() {
     const [perfil, setPerfil] = useState(localStorage.getItem('perfil'));
     const [plano, setPlano] = useState(localStorage.getItem('plano') || 'BASICO');
@@ -86,18 +86,16 @@ function App() {
 
     const PRO_OU_ACIMA = ['PROFISSIONAL', 'PREMIUM'];
 
-    // 1. Sua lógica de monitorar autenticação
     useEffect(() => {
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_IN' && session) {
                 const p = session.user.app_metadata?.perfil;
-                
-                // Evita que funcionários entrem na área administrativa
+
                 if (p === 'FUNCIONARIO') {
                     handleLogout();
                     return;
                 }
-                
+
                 setPerfil(p);
                 localStorage.setItem('perfil', p);
             }
@@ -106,7 +104,6 @@ function App() {
         return () => subscription.unsubscribe();
     }, []);
 
-    // 2. Sua lógica de buscar o plano da empresa no Back-end
     useEffect(() => {
         if (perfil === 'DONA') {
             api.get('/empresa/perfil')
@@ -126,7 +123,6 @@ function App() {
         setPlano('BASICO');
     }
 
-    // Função utilitária para checar acesso na Navbar (sua lógica)
     function temAcesso(planosPermitidos) {
         return planosPermitidos.includes(plano);
     }
@@ -141,8 +137,10 @@ function App() {
                 <Route path="/aguardando-confirmacao" element={<AguardandoConfirmacao />} />
                 <Route path="/pagamento/sucesso" element={<PagamentoSucesso />} />
                 <Route path="/pagamento/cancelado" element={<PagamentoCancelado />} />
+                <Route path="/termos" element={<Termos />} />
+                <Route path="/privacidade" element={<Privacidade />} />
 
-                {/* --- ÁREA PRIVADA (Protegida pelo Perfil) --- */}
+                {/* --- ÁREA PRIVADA --- */}
                 <Route
                     path="/*"
                     element={
@@ -150,23 +148,21 @@ function App() {
                             <Navigate to="/login" />
                         ) : (
                             <div className="min-h-screen bg-gray-100">
-                                {/* Sua Navbar estruturada */}
                                 <nav className="bg-blue-900 px-6 py-4 flex items-center gap-4 shadow-md flex-wrap">
                                     <span className="text-white text-xl font-bold mr-6">🎉 FestApp</span>
 
                                     {perfil === 'DONA' && (
                                         <>
-                                            <a href="/" className="text-white text-sm font-medium hover:underline">Dashboard</a>
-                                            <a href="/funcionarios" className="text-white text-sm font-medium hover:underline">Funcionários</a>
-                                            <a href="/festas" className="text-white text-sm font-medium hover:underline">Festas</a>
-                                            <a href="/brinquedos" className="text-white text-sm font-medium hover:underline">Brinquedos</a>
-                                            <a href="/chegada" className="text-white text-sm font-medium hover:underline">Ponto</a>
+                                            <Link to="/" className="text-white text-sm font-medium hover:underline">Dashboard</Link>
+                                            <Link to="/funcionarios" className="text-white text-sm font-medium hover:underline">Funcionários</Link>
+                                            <Link to="/festas" className="text-white text-sm font-medium hover:underline">Festas</Link>
+                                            <Link to="/brinquedos" className="text-white text-sm font-medium hover:underline">Brinquedos</Link>
+                                            <Link to="/chegada" className="text-white text-sm font-medium hover:underline">Ponto</Link>
 
-                                            {/* Links que abrem o modal se o plano for básico */}
                                             {temAcesso(PRO_OU_ACIMA) ? (
                                                 <>
-                                                    <a href="/financeiro" className="text-white text-sm font-medium hover:underline">Financeiro</a>
-                                                    <a href="/relatorio/funcionarios" className="text-white text-sm font-medium hover:underline">Relatório</a>
+                                                    <Link to="/financeiro" className="text-white text-sm font-medium hover:underline">Financeiro</Link>
+                                                    <Link to="/relatorio/funcionarios" className="text-white text-sm font-medium hover:underline">Relatório</Link>
                                                 </>
                                             ) : (
                                                 <>
@@ -175,8 +171,8 @@ function App() {
                                                 </>
                                             )}
 
-                                            <a href="/planos" className="text-white text-sm font-medium hover:underline">Planos</a>
-                                            <a href="/perfil" className="text-white text-sm font-medium hover:underline">Perfil</a>
+                                            <Link to="/planos" className="text-white text-sm font-medium hover:underline">Planos</Link>
+                                            <Link to="/perfil" className="text-white text-sm font-medium hover:underline">Perfil</Link>
                                         </>
                                     )}
 
@@ -190,7 +186,6 @@ function App() {
 
                                 {modalUpgrade && <ModalUpgrade onFechar={() => setModalUpgrade(false)} />}
 
-                                {/* Renderização das Páginas Internas */}
                                 <div className="p-4">
                                     <Routes>
                                         <Route path="/" element={<Dashboard />} />
@@ -201,7 +196,6 @@ function App() {
                                         <Route path="/perfil" element={<Perfil />} />
                                         <Route path="/planos" element={<Planos />} />
 
-                                        {/* Suas rotas bloqueadas por lógica de plano */}
                                         <Route
                                             path="/financeiro"
                                             element={

@@ -4,7 +4,13 @@ import { supabase } from '../services/supabase';
 
 function Funcionarios() {
     const [funcionarios, setFuncionarios] = useState([]);
-    const [form, setForm] = useState({ nome: '', email: '', telefone: '' });
+    const [form, setForm] = useState({
+        nome: '',
+        email: '',
+        telefone: '',
+        sexo: '',
+        dataNascimento: ''
+    });
     const [erro, setErro] = useState('');
     const [sucesso, setSucesso] = useState('');
     const [carregando, setCarregando] = useState(false);
@@ -26,8 +32,8 @@ function Funcionarios() {
     async function cadastrar() {
         setErro('');
         setSucesso('');
-        if (!form.nome || !form.email) {
-            setErro('Nome e email são obrigatórios');
+        if (!form.nome || !form.email || !form.sexo || !form.dataNascimento) {
+            setErro('Nome, email, sexo e data de nascimento são obrigatórios');
             return;
         }
         setCarregando(true);
@@ -41,13 +47,24 @@ function Funcionarios() {
                 }
             });
             setSucesso(`Funcionário cadastrado! Email de acesso enviado para ${form.email}`);
-            setForm({ nome: '', email: '', telefone: '' });
+            setForm({ nome: '', email: '', telefone: '', sexo: '', dataNascimento: '' });
             carregarFuncionarios();
         } catch (err) {
-            console.log(err.response);
-            setErro(typeof err.response?.data === 'string' ? err.response.data : 'Erro ao cadastrar funcionário');
+            const msg = err.response?.data;
+            setErro(typeof msg === 'string' ? msg : msg?.erro || JSON.stringify(msg));
         } finally {
             setCarregando(false);
+        }
+    }
+
+    async function demitir(id, nome) {
+        if (!window.confirm(`Deseja demitir ${nome}? Ele receberá um email de notificação.`)) return;
+        try {
+            await api.delete(`/funcionarios/${id}`);
+            setSucesso(`Funcionário ${nome} desvinculado com sucesso`);
+            carregarFuncionarios();
+        } catch (err) {
+            setErro('Erro ao demitir funcionário');
         }
     }
 
@@ -103,10 +120,29 @@ function Funcionarios() {
                         onChange={handleChange}
                         className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-44 focus:outline-none focus:ring-2 focus:ring-blue-900"
                     />
+                    <select
+                        name="sexo"
+                        value={form.sexo}
+                        onChange={handleChange}
+                        className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-36 focus:outline-none focus:ring-2 focus:ring-blue-900 text-gray-600">
+                        <option value="">Sexo</option>
+                        <option value="MASCULINO">Masculino</option>
+                        <option value="FEMININO">Feminino</option>
+                    </select>
+                    <div className="flex flex-col">
+                        <label className="text-xs text-gray-500 mb-1 ml-1">Data de nascimento</label>
+                        <input
+                            name="dataNascimento"
+                            type="date"
+                            value={form.dataNascimento}
+                            onChange={handleChange}
+                            className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-44 focus:outline-none focus:ring-2 focus:ring-blue-900"
+                        />
+                    </div>
                     <button
                         onClick={cadastrar}
                         disabled={carregando}
-                        className="bg-blue-900 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition disabled:opacity-50">
+                        className="bg-blue-900 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-800 transition disabled:opacity-50 self-end">
                         {carregando ? 'Cadastrando...' : '+ Cadastrar'}
                     </button>
                 </div>
@@ -122,12 +158,13 @@ function Funcionarios() {
                             <th className="text-left px-5 py-3">Avaliação</th>
                             <th className="text-left px-5 py-3">Status</th>
                             <th className="text-left px-5 py-3">Ação</th>
+                            <th className="text-left px-5 py-3">Demitir</th>
                         </tr>
                     </thead>
                     <tbody>
                         {funcionarios.length === 0 && (
                             <tr>
-                                <td colSpan={6} className="text-center py-8 text-gray-400">
+                                <td colSpan={7} className="text-center py-8 text-gray-400">
                                     Nenhum funcionário cadastrado
                                 </td>
                             </tr>
@@ -164,6 +201,13 @@ function Funcionarios() {
                                                     : 'border-green-400 text-green-600 hover:bg-green-50'
                                             }`}>
                                             {f.statusDia === 'DISPONIVEL' ? 'Folga' : 'Disponibilizar'}
+                                        </button>
+                                    </td>
+                                    <td className="px-5 py-3">
+                                        <button
+                                            onClick={() => demitir(f.id, f.nome)}
+                                            className="px-3 py-1 rounded-lg text-xs font-medium border border-red-600 text-red-600 hover:bg-red-50 transition">
+                                            Demitir
                                         </button>
                                     </td>
                                 </tr>

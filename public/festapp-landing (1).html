@@ -84,6 +84,22 @@ nav.stuck {
   transition: color 0.2s;
 }
 .nav-links a:hover { color: #fff; }
+
+.nav-entrar {
+  border: 1px solid rgba(255,255,255,0.25) !important;
+  padding: 8px 18px !important;
+  border-radius: 100px !important;
+  color: rgba(255,255,255,0.85) !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s !important;
+}
+.nav-entrar:hover {
+  border-color: rgba(255,255,255,0.6) !important;
+  color: #fff !important;
+  background: rgba(255,255,255,0.07) !important;
+}
+
 .nav-pill {
   background: var(--gold) !important;
   color: var(--navy) !important;
@@ -137,6 +153,13 @@ nav.stuck {
   transition: color 0.2s;
 }
 .mobile-menu a:hover { color: var(--gold); }
+.mobile-entrar {
+  font-size: 1rem !important;
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 12px 36px;
+  border-radius: 100px;
+  color: rgba(255,255,255,0.85) !important;
+}
 .mobile-cta {
   margin-top: 8px;
   background: var(--gold) !important;
@@ -669,6 +692,7 @@ footer p { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
   <a href="#problemas" onclick="closeMenu()">Problemas</a>
   <a href="#funcionalidades" onclick="closeMenu()">Funcionalidades</a>
   <a href="#precos" onclick="closeMenu()">Preços</a>
+  <a href="http://localhost:3000" class="mobile-entrar" onclick="closeMenu()">Entrar</a>
   <a href="#cadastro" class="btn btn-gold mobile-cta" onclick="closeMenu()">Começar grátis</a>
 </div>
 
@@ -679,6 +703,7 @@ footer p { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
     <a href="#problemas">Problemas</a>
     <a href="#funcionalidades">Funcionalidades</a>
     <a href="#precos">Preços</a>
+    <a href="http://localhost:3000" class="nav-entrar">Entrar</a>
     <a href="#cadastro" class="nav-pill">Começar grátis</a>
   </div>
   <div class="nav-toggle" id="navToggle" onclick="toggleMenu()">
@@ -849,11 +874,11 @@ footer p { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
           <li>Até 15 funcionários</li>
           <li>Escala automática</li>
           <li>Controle de ponto</li>
-           <li>Gestão de brinquedos</li>
+          <li>Gestão de brinquedos</li>
           <li>Alertas de atraso por email</li>
           <li>Suporte por email</li>
         </ul>
-        <a href="#cadastro" class="plan-btn plan-btn-outline">Começar agora →</a>
+        <a href="http://localhost:3000/cadastro?plano=BASICO" class="plan-btn plan-btn-outline">Começar agora →</a>
       </div>
       <div class="plan plan--featured reveal d1">
         <div class="plan-ribbon">✦ Mais popular</div>
@@ -867,7 +892,7 @@ footer p { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
           <li>Relatórios completos</li>
           <li>Suporte prioritário</li>
         </ul>
-        <a href="#cadastro" class="plan-btn plan-btn-fill">Escolher este plano →</a>
+        <a href="http://localhost:3000/cadastro?plano=PROFISSIONAL" class="plan-btn plan-btn-fill">Escolher este plano →</a>
       </div>
       <div class="plan reveal d2">
         <div class="plan-tier">Premium</div>
@@ -880,7 +905,7 @@ footer p { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
           <li>API de integrações</li>
           <li>Suporte dedicado 24/7</li>
         </ul>
-        <a href="#cadastro" class="plan-btn plan-btn-outline">Começar agora →</a>
+        <a href="http://localhost:3000/cadastro?plano=PREMIUM" class="plan-btn plan-btn-outline">Começar agora →</a>
       </div>
     </div>
   </div>
@@ -892,11 +917,11 @@ footer p { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
   <div class="cta-rings"><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
   <div class="cta-inner">
     <h2 class="reveal">Pronto para organizar<br/>sua empresa de <em>festas?</em></h2>
-    <p class="reveal d1">Cadastre sua empresa agora e comece a usar o FestApp hoje mesmo. Sem cartão de crédito.</p>
+    <p class="reveal d1">Cadastre sua empresa agora e comece a usar o FestApp hoje mesmo.</p>
     <a href="http://localhost:3000/cadastro" class="btn btn-gold reveal d2" style="font-size:1rem;padding:16px 44px;border-radius:14px;display:inline-flex">
       Cadastrar minha empresa <span class="btn-icon">→</span>
     </a>
-    <p class="cta-note reveal d3">🔒 Sem cartão de crédito &nbsp;·&nbsp; Cancele quando quiser</p>
+    <p class="cta-note reveal d3">🔒 Cancele quando quiser &nbsp;·&nbsp; Suporte em português</p>
   </div>
 </section>
 
@@ -906,8 +931,9 @@ footer p { font-size: 0.8rem; color: rgba(255,255,255,0.2); }
   <div class="footer-links">
     <a href="#problemas">Produto</a>
     <a href="#precos">Preços</a>
-    <a href="#">Contato</a>
-    <a href="#">Privacidade</a>
+    <a href="mailto:contato@festapp.com.br">Contato</a>
+    <a href="http://localhost:3000/termos">Termos de Uso</a>
+    <a href="http://localhost:3000/privacidade">Privacidade</a>
   </div>
   <p>© 2026 FestApp · Feito com 🎉 no Brasil</p>
 </footer>
